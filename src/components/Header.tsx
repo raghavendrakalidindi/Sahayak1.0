@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const Header = () => {
+interface HeaderProps {
+  onSignup: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onSignup }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -35,7 +39,10 @@ const Header = () => {
           
           {/* CTA Button */}
           <div className="hidden md:block">
-            <button className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <button 
+              onClick={onSignup}
+              className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
               Get Started Free
             </button>
           </div>
@@ -67,7 +74,10 @@ const Header = () => {
               <a href="#faq" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
                 FAQ
               </a>
-              <button className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors w-full">
+              <button 
+                onClick={onSignup}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors w-full"
+              >
                 Get Started Free
               </button>
             </div>

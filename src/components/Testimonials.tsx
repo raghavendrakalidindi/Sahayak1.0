@@ -1,7 +1,11 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
 
-const Testimonials = () => {
+interface TestimonialsProps {
+  onSignup: () => void;
+}
+
+const Testimonials: React.FC<TestimonialsProps> = ({ onSignup }) => {
   const testimonials = [
     {
       quote: "We set up Sahayak in one day. Our employees love how simple it is — no training required. IT tickets now resolve 40% faster.",
@@ -63,7 +67,10 @@ const Testimonials = () => {
         
         <div className="text-center mt-12">
           <p className="text-gray-600 mb-6">Join hundreds of satisfied customers</p>
-          <button className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors">
+          <button 
+            onClick={onSignup}
+            className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
+          >
             Start Your Success Story
           </button>
         </div>

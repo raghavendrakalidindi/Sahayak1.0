@@ -1,7 +1,11 @@
 import React from 'react';
 import { Play, MessageSquare, Mail, Send } from 'lucide-react';
 
-const Hero = () => {
+interface HeroProps {
+  onSignup: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onSignup }) => {
   return (
     <section className="pt-24 pb-16 bg-gradient-to-br from-emerald-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +24,10 @@ const Hero = () => {
             </p>
 
             <div className="space-y-4">
-              <button className="bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              <button 
+                onClick={onSignup}
+                className="bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
                 Book a Free Demo
               </button>
               <p className="text-gray-500 text-sm">

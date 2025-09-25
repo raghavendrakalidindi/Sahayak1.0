@@ -1,7 +1,11 @@
 import React from 'react';
 import { Play } from 'lucide-react';
 
-const VideoSection = () => {
+interface VideoSectionProps {
+  onSignup?: () => void;
+}
+
+const VideoSection: React.FC<VideoSectionProps> = ({ onSignup }) => {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -10,7 +14,10 @@ const VideoSection = () => {
         </h2>
         
         <div className="relative group cursor-pointer">
-          <div className="aspect-video bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl shadow-2xl overflow-hidden">
+          <div 
+            onClick={onSignup}
+            className="aspect-video bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl shadow-2xl overflow-hidden"
+          >
             <div className="flex items-center justify-center h-full">
               <div className="bg-white/20 backdrop-blur-sm rounded-full p-6 group-hover:bg-white/30 transition-colors">
                 <Play className="w-16 h-16 text-white fill-white" />
@@ -22,7 +29,12 @@ const VideoSection = () => {
         </div>
         
         <p className="mt-6 text-gray-600">
-          Watch how Sahayak transforms employee support from chaos to clarity in under 2 minutes.
+          <button 
+            onClick={onSignup}
+            className="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
+          >
+            See It in Action
+          </button> - Watch how Sahayak transforms employee support from chaos to clarity.
         </p>
       </div>
     </section>
