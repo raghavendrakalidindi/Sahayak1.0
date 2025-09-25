@@ -3,9 +3,10 @@ import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
   onSignup: () => void;
+  onLogin: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSignup }) => {
+const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -39,12 +40,20 @@ const Header: React.FC<HeaderProps> = ({ onSignup }) => {
           
           {/* CTA Button */}
           <div className="hidden md:block">
-            <button 
-              onClick={onSignup}
-              className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              Get Started Free
-            </button>
+            <div className="flex space-x-3">
+              <button 
+                onClick={onLogin}
+                className="text-emerald-600 border border-emerald-600 px-4 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors"
+              >
+                Login
+              </button>
+              <button 
+                onClick={onSignup}
+                className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                Get Started Free
+              </button>
+            </div>
           </div>
           
           {/* Mobile menu button */}
@@ -74,6 +83,12 @@ const Header: React.FC<HeaderProps> = ({ onSignup }) => {
               <a href="#faq" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
                 FAQ
               </a>
+              <button 
+                onClick={onLogin}
+                className="text-emerald-600 border border-emerald-600 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-colors w-full"
+              >
+                Login
+              </button>
               <button 
                 onClick={onSignup}
                 className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors w-full"
