@@ -13,6 +13,7 @@ const Footer = () => {
               alt="Sahayak Logo" 
               className="h-24 w-auto mb-6"
             />
+            <p className="text-gray-300 mb-6 text-lg leading-relaxed">
               No training needed, just instant resolution.
             </p>
             <div className="flex space-x-4">
