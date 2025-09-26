@@ -85,7 +85,7 @@ function App() {
   }
 
   if (showLogin) {
-    return <LoginPage onBack={handleBackToHome} onLoginSuccess={handleLoginSuccess} />;
+    return <LoginPage onBack={handleBackToHome} onLoginSuccess={handleLoginSuccess} onShowSignup={handleShowSignup} />;
   }
 
   return (

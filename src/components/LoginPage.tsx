@@ -5,9 +5,10 @@ import { supabase } from '../lib/supabase';
 interface LoginPageProps {
   onBack: () => void;
   onLoginSuccess: () => void;
+  onShowSignup: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onBack, onLoginSuccess }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onBack, onLoginSuccess, onShowSignup }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -133,7 +134,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack, onLoginSuccess }) => {
         <div className="mt-8 pt-6 border-t border-gray-200 text-center">
           <p className="text-gray-600 text-sm">
             Don't have an account?{' '}
-            <button className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+            <button 
+              onClick={onShowSignup}
+              className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+            >
               Sign up here
             </button>
           </p>
