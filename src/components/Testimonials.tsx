@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
+import PulsatingButton from './PulsatingButton';
 
 interface TestimonialsProps {
   onSignup: () => void;
@@ -67,12 +68,12 @@ const Testimonials: React.FC<TestimonialsProps> = ({ onSignup }) => {
         
         <div className="text-center mt-12">
           <p className="text-gray-600 mb-6">Join hundreds of satisfied customers</p>
-          <button 
+          <PulsatingButton 
             onClick={onSignup}
-            className="bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
+            className="px-8 py-3"
           >
             Start Your Success Story
-          </button>
+          </PulsatingButton>
         </div>
       </div>
     </section>

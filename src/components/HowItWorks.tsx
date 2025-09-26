@@ -6,6 +6,7 @@ import {
   Users, 
   Activity 
 } from 'lucide-react';
+import PulsatingButton from './PulsatingButton';
 
 const HowItWorks = () => {
   const steps = [
@@ -78,12 +79,12 @@ const HowItWorks = () => {
           <p className="text-lg text-gray-600 mb-6">
             From problem to solution in under 60 seconds
           </p>
-          <button 
+          <PulsatingButton 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors shadow-lg"
+            className="px-8 py-4 text-lg"
           >
             See It in Action
-          </button>
+          </PulsatingButton>
         </div>
       </div>
     </section>

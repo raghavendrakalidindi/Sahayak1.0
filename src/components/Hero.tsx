@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play, MessageSquare, Mail, Send } from 'lucide-react';
+import PulsatingButton from './PulsatingButton';
 
 interface HeroProps {
   onSignup: () => void;
@@ -24,12 +25,12 @@ const Hero: React.FC<HeroProps> = ({ onSignup }) => {
             </p>
 
             <div className="space-y-4">
-              <button 
+              <PulsatingButton 
                 onClick={onSignup}
-                className="bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                className="px-8 py-4 text-lg"
               >
                 Book a Free Demo
-              </button>
+              </PulsatingButton>
               <p className="text-gray-500 text-sm">
                 No setup required. Works with tools you already use.
               </p>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import ScrollProgress from './ScrollProgress';
+import PulsatingButton from './PulsatingButton';
 
 interface HeaderProps {
   onSignup: () => void;
@@ -49,12 +50,12 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
               >
                 Login
               </button>
-              <button 
+              <PulsatingButton 
                 onClick={onSignup}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="px-6 py-3"
               >
                 Get Started Free
-              </button>
+              </PulsatingButton>
             </div>
           </div>
           
@@ -91,12 +92,12 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
               >
                 Login
               </button>
-              <button 
+              <PulsatingButton 
                 onClick={onSignup}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors w-full"
+                className="px-6 py-3 w-full"
               >
                 Get Started Free
-              </button>
+              </PulsatingButton>
             </div>
           </div>
         )}
