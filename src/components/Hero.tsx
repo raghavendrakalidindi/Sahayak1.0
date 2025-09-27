@@ -25,12 +25,12 @@ const Hero: React.FC<HeroProps> = ({ onSignup }) => {
             </p>
 
             <div className="space-y-4">
-              <PulsatingButton 
+              <button 
                 onClick={onSignup}
-                className="px-8 py-4 text-lg"
+                className="bg-emerald-600 text-white px-8 py-4 text-lg rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
                 Book a Free Demo
-              </PulsatingButton>
+              </button>
               <p className="text-gray-500 text-sm">
                 No setup required. Works with tools you already use.
               </p>

@@ -79,12 +79,12 @@ const HowItWorks = () => {
           <p className="text-lg text-gray-600 mb-6">
             From problem to solution in under 60 seconds
           </p>
-          <PulsatingButton 
+          <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="px-8 py-4 text-lg"
+            className="bg-emerald-600 text-white px-8 py-4 text-lg rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
           >
             See It in Action
-          </PulsatingButton>
+          </button>
         </div>
       </div>
     </section>

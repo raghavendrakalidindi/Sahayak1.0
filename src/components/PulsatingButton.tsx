@@ -27,8 +27,9 @@ const PulsatingButton: React.FC<PulsatingButtonProps> = ({
         shadow-lg hover:shadow-xl transform hover:-translate-y-1
         disabled:opacity-50 disabled:cursor-not-allowed
         before:absolute before:inset-0 before:rounded-lg
-        before:bg-emerald-400 before:opacity-75
-        before:animate-ping before:duration-1000
+        before:bg-emerald-400 before:opacity-40
+        before:animate-ping before:duration-2000
+        before:scale-105
         ${className}
       `}
     >

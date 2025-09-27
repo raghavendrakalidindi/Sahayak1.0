@@ -20,21 +20,21 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onSignup }) => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <PulsatingButton 
+            <button 
               onClick={onSignup}
               className="bg-white text-emerald-600 px-8 py-4 font-bold text-lg hover:bg-gray-100 shadow-xl flex items-center space-x-2 group"
             >
               <Zap className="w-6 h-6" />
               <span>Start Free Trial</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </PulsatingButton>
+            </button>
             
-            <PulsatingButton 
+            <button 
               onClick={onSignup}
               className="border-2 border-white text-white px-8 py-4 font-semibold text-lg hover:bg-white hover:text-emerald-600"
             >
               Schedule Demo
-            </PulsatingButton>
+            </button>
           </div>
           
           <p className="text-emerald-200">

@@ -30,12 +30,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({ onSignup }) => {
         </div>
         
         <p className="mt-6 text-gray-600">
-          <PulsatingButton 
+          <button 
             onClick={onSignup}
-            className="px-6 py-2 text-sm"
+            className="bg-emerald-600 text-white px-6 py-2 text-sm rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
           >
             See It in Action
-          </PulsatingButton>
+          </button>
           <span className="ml-2">- Watch how Sahayak transforms employee support from chaos to clarity.</span>
         </p>
       </div>
