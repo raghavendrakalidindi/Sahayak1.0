@@ -43,16 +43,16 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
           
           {/* CTA Button */}
           <div className="hidden md:block">
-            <div className="flex space-x-3">
+            <div className="flex items-center space-x-4">
               <button 
                 onClick={onLogin}
-                className="text-emerald-600 border border-emerald-600 px-4 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors"
+                className="text-emerald-600 border border-emerald-600 px-5 py-2 rounded-lg font-semibold hover:bg-emerald-50 transition-colors mr-2"
               >
                 Login
               </button>
               <PulsatingButton 
                 onClick={onSignup}
-                className="px-6 py-3"
+                className="px-6 py-3 ml-2"
               >
                 Get Started Free
               </PulsatingButton>
@@ -88,13 +88,13 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
               </a>
               <button 
                 onClick={onLogin}
-                className="text-emerald-600 border border-emerald-600 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-colors w-full"
+                className="text-emerald-600 border border-emerald-600 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-colors w-full mb-2"
               >
                 Login
               </button>
               <PulsatingButton 
                 onClick={onSignup}
-                className="px-6 py-3 w-full"
+                className="px-6 py-3 w-full mt-2"
               >
                 Get Started Free
               </PulsatingButton>
