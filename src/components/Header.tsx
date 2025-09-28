@@ -92,13 +92,13 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
               >
                 Login
               </button>
-              <button
+              <PulsatingButton 
                 onClick={onSignup}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 w-full mt-2"
+                className="px-6 py-3 w-full mt-2"
               >
               className="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 ml-2"
                 Get Started Free
-              </button>
+              </PulsatingButton>
             </button>
           </div>
         )}
