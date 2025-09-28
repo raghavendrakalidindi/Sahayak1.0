@@ -1,6 +1,5 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
-import PulsatingButton from './PulsatingButton';
 
 interface TestimonialsProps {
   onSignup: () => void;

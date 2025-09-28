@@ -6,7 +6,6 @@ import {
   Users, 
   Activity 
 } from 'lucide-react';
-import PulsatingButton from './PulsatingButton';
 
 const HowItWorks = () => {
   const steps = [

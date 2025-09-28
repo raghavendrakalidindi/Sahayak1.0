@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowRight, Zap } from 'lucide-react';
-import PulsatingButton from './PulsatingButton';
 
 interface FinalCTAProps {
   onSignup: () => void;

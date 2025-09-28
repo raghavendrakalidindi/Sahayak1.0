@@ -1,6 +1,5 @@
 import React from 'react';
 import { Play } from 'lucide-react';
-import PulsatingButton from './PulsatingButton';
 
 interface VideoSectionProps {
   onSignup?: () => void;

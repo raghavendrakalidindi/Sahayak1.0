@@ -1,6 +1,5 @@
 import React from 'react';
 import { Play, MessageSquare, Mail, Send } from 'lucide-react';
-import PulsatingButton from './PulsatingButton';
 
 interface HeroProps {
   onSignup: () => void;
