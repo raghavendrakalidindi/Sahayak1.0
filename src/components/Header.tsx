@@ -106,6 +106,7 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
       </header>
       <ScrollProgress className="top-16" />
     </>
+  )
   );
 };
 
