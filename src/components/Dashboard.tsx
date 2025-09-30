@@ -283,6 +283,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
               </select>
+
+              <button
+                onClick={() => {
+                  if (selectedComplaints.size === 0) {
+                    alert('Please select complaints to escalate');
+                    return;
+                  }
+                  // TODO: Implement escalation logic
+                  alert(`Escalating ${selectedComplaints.size} selected complaint(s)`);
+                }}
+                disabled={selectedComplaints.size === 0}
+                className="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                <AlertCircle className="w-4 h-4" />
+                <span>Escalate</span>
+              </button>
             </div>
 
             <div className="flex items-center gap-4">
