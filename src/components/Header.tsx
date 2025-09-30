@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import ScrollProgress from './ScrollProgress';
-import PulsatingButton from './PulsatingButton';
 
 interface HeaderProps {
   onSignup: () => void;
