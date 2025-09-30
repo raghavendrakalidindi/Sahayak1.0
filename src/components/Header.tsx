@@ -67,6 +67,7 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
+          </div>
         </div>
         
         {/* Mobile Navigation */}
@@ -97,13 +98,13 @@ const Header: React.FC<HeaderProps> = ({ onSignup, onLogin }) => {
               >
                 Get Started Free
               </button>
+            </div>
           </div>
         )}
       </div>
       </header>
       <ScrollProgress className="top-16" />
     </>
-  )
   );
 };
 
