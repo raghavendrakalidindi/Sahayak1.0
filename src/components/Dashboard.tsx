@@ -9,7 +9,8 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
-  Eye
+  Eye,
+  Check
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -33,6 +34,7 @@ interface ComplaintData {
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [complaints, setComplaints] = useState<ComplaintData[]>([]);
   const [filteredComplaints, setFilteredComplaints] = useState<ComplaintData[]>([]);
+  const [selectedComplaints, setSelectedComplaints] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -48,6 +50,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     filterComplaints();
   }, [complaints, searchTerm, statusFilter, priorityFilter]);
 
+  useEffect(() => {
+    // Clear selections when filtered complaints change
+    setSelectedComplaints(new Set());
+  }, [filteredComplaints]);
   const fetchUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
@@ -90,6 +96,35 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     setFilteredComplaints(filtered);
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allIds = new Set(
+        filteredComplaints
+          .map(complaint => complaint['Unique UserId'])
+          .filter(id => id !== null) as string[]
+      );
+      setSelectedComplaints(allIds);
+    } else {
+      setSelectedComplaints(new Set());
+    }
+  };
+
+  const handleSelectComplaint = (userId: string, checked: boolean) => {
+    const newSelected = new Set(selectedComplaints);
+    if (checked) {
+      newSelected.add(userId);
+    } else {
+      newSelected.delete(userId);
+    }
+    setSelectedComplaints(newSelected);
+  };
+
+  const isAllSelected = filteredComplaints.length > 0 && 
+    filteredComplaints.every(complaint => 
+      complaint['Unique UserId'] && selectedComplaints.has(complaint['Unique UserId'])
+    );
+
+  const isIndeterminate = selectedComplaints.size > 0 && !isAllSelected;
   const getStatusColor = (status: string | null) => {
     if (!status) return 'bg-gray-100 text-gray-800';
     switch (status.toLowerCase()) {
@@ -250,8 +285,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </select>
             </div>
 
-            <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
-              Read-only view
+            <div className="flex items-center gap-4">
+              {selectedComplaints.size > 0 && (
+                <div className="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-medium">
+                  {selectedComplaints.size} selected
+                </div>
+              )}
+              <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
+                Read-only view
+              </div>
             </div>
           </div>
         </div>
@@ -262,6 +304,22 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-6 py-3 text-left">
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        ref={(el) => {
+                          if (el) el.indeterminate = isIndeterminate;
+                        }}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Select
+                      </span>
+                    </div>
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     User ID
                   </th>
@@ -294,6 +352,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredComplaints.map((complaint, index) => (
                   <tr key={complaint['Unique UserId'] || index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={complaint['Unique UserId'] ? selectedComplaints.has(complaint['Unique UserId']) : false}
+                        onChange={(e) => {
+                          if (complaint['Unique UserId']) {
+                            handleSelectComplaint(complaint['Unique UserId'], e.target.checked);
+                          }
+                        }}
+                        disabled={!complaint['Unique UserId']}
+                        className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded disabled:opacity-50"
+                      />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {complaint['Unique UserId'] || 'N/A'}
                     </td>
