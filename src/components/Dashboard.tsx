@@ -37,8 +37,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [selectedComplaints, setSelectedComplaints] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [contactSearch, setContactSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [directedToFilter, setDirectedToFilter] = useState('All');
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   useEffect(() => {
     filterComplaints();
-  }, [complaints, searchTerm, statusFilter, priorityFilter]);
+  }, [complaints, searchTerm, contactSearch, statusFilter, priorityFilter, categoryFilter, directedToFilter]);
 
   useEffect(() => {
     // Clear selections when filtered complaints change
@@ -85,12 +88,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       );
     }
 
+    if (contactSearch) {
+      filtered = filtered.filter(complaint =>
+        complaint['Contact']?.toLowerCase().includes(contactSearch.toLowerCase()) || false
+      );
+    }
+
     if (statusFilter !== 'All') {
       filtered = filtered.filter(complaint => complaint['Compliant-Status'] === statusFilter);
     }
 
     if (priorityFilter !== 'All') {
       filtered = filtered.filter(complaint => complaint['Compliant-Urgency'] === priorityFilter);
+    }
+
+    if (categoryFilter !== 'All') {
+      filtered = filtered.filter(complaint => complaint['Compliant-Category'] === categoryFilter);
+    }
+
+    if (directedToFilter !== 'All') {
+      filtered = filtered.filter(complaint => complaint['Compliant-Directed to'] === directedToFilter);
     }
 
     setFilteredComplaints(filtered);
@@ -125,6 +142,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     );
 
   const isIndeterminate = selectedComplaints.size > 0 && !isAllSelected;
+
+  // Get unique values for dropdown filters
+  const uniqueCategories = Array.from(new Set(
+    complaints
+      .map(c => c['Compliant-Category'])
+      .filter(category => category && category.trim() !== '')
+  )).sort();
+
+  const uniqueDirectedTo = Array.from(new Set(
+    complaints
+      .map(c => c['Compliant-Directed to'])
+      .filter(directedTo => directedTo && directedTo.trim() !== '')
+  )).sort();
+
   const getStatusColor = (status: string | null) => {
     if (!status) return 'bg-gray-100 text-gray-800';
     switch (status.toLowerCase()) {
@@ -248,57 +279,96 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {/* Controls */}
         <div className="bg-white rounded-lg shadow mb-6 p-6 sticky top-44 z-20">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search complaints..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
+            <div className="flex flex-col lg:flex-row gap-4 flex-1">
+              {/* First row of filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search complaints..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
+                  />
+                </div>
+
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by contact..."
+                    value={contactSearch}
+                    onChange={(e) => setContactSearch(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
+                  />
+                </div>
               </div>
 
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              >
-                <option value="All">All Status</option>
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Closed">Closed</option>
-              </select>
+              {/* Second row of filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="All">All Status</option>
+                  <option value="Open">Open</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Closed">Closed</option>
+                </select>
 
-              <select
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              >
-                <option value="All">All Priority</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
+                <select
+                  value={priorityFilter}
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="All">All Priority</option>
+                  <option value="Critical">Critical</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
 
-              <button
-                onClick={() => {
-                  if (selectedComplaints.size === 0) {
-                    alert('Please select complaints to escalate');
-                    return;
-                  }
-                  // TODO: Implement escalation logic
-                  alert(`Escalating ${selectedComplaints.size} selected complaint(s)`);
-                }}
-                disabled={selectedComplaints.size === 0}
-                className="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-              >
-                <AlertCircle className="w-4 h-4" />
-                <span>Escalate</span>
-              </button>
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="All">All Categories</option>
+                  {uniqueCategories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+
+                <select
+                  value={directedToFilter}
+                  onChange={(e) => setDirectedToFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="All">All Assignees</option>
+                  {uniqueDirectedTo.map(assignee => (
+                    <option key={assignee} value={assignee}>{assignee}</option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={() => {
+                    if (selectedComplaints.size === 0) {
+                      alert('Please select complaints to escalate');
+                      return;
+                    }
+                    // TODO: Implement escalation logic
+                    alert(`Escalating ${selectedComplaints.size} selected complaint(s)`);
+                  }}
+                  disabled={selectedComplaints.size === 0}
+                  className="px-6 py-2 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 whitespace-nowrap"
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  <span>Escalate</span>
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
