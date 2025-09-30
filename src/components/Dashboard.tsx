@@ -195,7 +195,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 sticky top-20 bg-gray-50 z-30 py-4 -mx-4 px-4">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="bg-blue-100 p-3 rounded-lg">
@@ -246,7 +246,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow mb-6 p-6">
+        <div className="bg-white rounded-lg shadow mb-6 p-6 sticky top-44 z-20">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
               <div className="relative">
@@ -304,7 +304,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left">
+                  <th className="px-6 py-3 text-left sticky left-0 bg-gray-50 z-10 border-r border-gray-200">
                     <div className="flex items-center">
                       <input
                         type="checkbox"
@@ -320,7 +320,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       </span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-16 bg-gray-50 z-10 border-r border-gray-200">
                     User ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -352,7 +352,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredComplaints.map((complaint, index) => (
                   <tr key={complaint['Unique UserId'] || index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap sticky left-0 bg-white z-10 border-r border-gray-200">
                       <input
                         type="checkbox"
                         checked={complaint['Unique UserId'] ? selectedComplaints.has(complaint['Unique UserId']) : false}
@@ -365,7 +365,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded disabled:opacity-50"
                       />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 sticky left-16 bg-white z-10 border-r border-gray-200">
                       {complaint['Unique UserId'] || 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
