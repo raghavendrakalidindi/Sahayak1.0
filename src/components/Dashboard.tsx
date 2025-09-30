@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LogOut, 
-  Plus, 
   Search, 
   Filter, 
   BarChart3, 
@@ -10,8 +9,6 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
-  Edit,
-  Trash2,
   Eye
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -20,38 +17,27 @@ interface DashboardProps {
   onLogout: () => void;
 }
 
-interface Complaint {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  status: 'Open' | 'In Progress' | 'Resolved' | 'Closed';
-  assigned_to: string | null;
-  created_at: string;
-  updated_at: string;
-  resolved_at: string | null;
-  user_id: string;
+interface ComplaintData {
+  'Unique UserId': string | null;
+  'Contact': string | null;
+  'Compliant TimeStamp': string | null;
+  'Compliant-Full': string | null;
+  'Compliant-Brief': string | null;
+  'Compliant-Category': string | null;
+  'Compliant-Urgency': string | null;
+  'Compliant-Directed to': string | null;
+  'Compliant-Status': string | null;
+  'Compliant-Escalation': string | null;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
-  const [complaints, setComplaints] = useState<Complaint[]>([]);
-  const [filteredComplaints, setFilteredComplaints] = useState<Complaint[]>([]);
+  const [complaints, setComplaints] = useState<ComplaintData[]>([]);
+  const [filteredComplaints, setFilteredComplaints] = useState<ComplaintData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingComplaint, setEditingComplaint] = useState<Complaint | null>(null);
   const [user, setUser] = useState<any>(null);
-
-  const [newComplaint, setNewComplaint] = useState({
-    title: '',
-    description: '',
-    category: 'General',
-    priority: 'Medium' as const,
-    assigned_to: ''
-  });
 
   useEffect(() => {
     fetchUser();
@@ -70,9 +56,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const fetchComplaints = async () => {
     try {
       const { data, error } = await supabase
-        .from('complaints')
+        .from('Complaints Data')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('Compliant TimeStamp', { ascending: false });
 
       if (error) throw error;
       setComplaints(data || []);
@@ -88,106 +74,49 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
     if (searchTerm) {
       filtered = filtered.filter(complaint =>
-        complaint.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        complaint.description.toLowerCase().includes(searchTerm.toLowerCase())
+        (complaint['Compliant-Brief']?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+        (complaint['Compliant-Full']?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
       );
     }
 
     if (statusFilter !== 'All') {
-      filtered = filtered.filter(complaint => complaint.status === statusFilter);
+      filtered = filtered.filter(complaint => complaint['Compliant-Status'] === statusFilter);
     }
 
     if (priorityFilter !== 'All') {
-      filtered = filtered.filter(complaint => complaint.priority === priorityFilter);
+      filtered = filtered.filter(complaint => complaint['Compliant-Urgency'] === priorityFilter);
     }
 
     setFilteredComplaints(filtered);
   };
 
-  const handleAddComplaint = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from('complaints')
-        .insert([{
-          ...newComplaint,
-          user_id: user.id
-        }]);
-
-      if (error) throw error;
-
-      setNewComplaint({
-        title: '',
-        description: '',
-        category: 'General',
-        priority: 'Medium',
-        assigned_to: ''
-      });
-      setShowAddModal(false);
-      fetchComplaints();
-    } catch (error) {
-      console.error('Error adding complaint:', error);
-    }
-  };
-
-  const handleUpdateComplaint = async (id: string, updates: Partial<Complaint>) => {
-    try {
-      const { error } = await supabase
-        .from('complaints')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', id);
-
-      if (error) throw error;
-      fetchComplaints();
-      setEditingComplaint(null);
-    } catch (error) {
-      console.error('Error updating complaint:', error);
-    }
-  };
-
-  const handleDeleteComplaint = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this complaint?')) return;
-
-    try {
-      const { error } = await supabase
-        .from('complaints')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      fetchComplaints();
-    } catch (error) {
-      console.error('Error deleting complaint:', error);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Open': return 'bg-red-100 text-red-800';
-      case 'In Progress': return 'bg-yellow-100 text-yellow-800';
-      case 'Resolved': return 'bg-green-100 text-green-800';
-      case 'Closed': return 'bg-gray-100 text-gray-800';
+  const getStatusColor = (status: string | null) => {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    switch (status.toLowerCase()) {
+      case 'open': return 'bg-red-100 text-red-800';
+      case 'in progress': return 'bg-yellow-100 text-yellow-800';
+      case 'resolved': return 'bg-green-100 text-green-800';
+      case 'closed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'Critical': return 'bg-red-100 text-red-800';
-      case 'High': return 'bg-orange-100 text-orange-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800';
+  const getPriorityColor = (priority: string | null) => {
+    if (!priority) return 'bg-gray-100 text-gray-800';
+    switch (priority.toLowerCase()) {
+      case 'critical': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const stats = {
     total: complaints.length,
-    open: complaints.filter(c => c.status === 'Open').length,
-    inProgress: complaints.filter(c => c.status === 'In Progress').length,
-    resolved: complaints.filter(c => c.status === 'Resolved').length
+    open: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'open').length,
+    inProgress: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'in progress').length,
+    resolved: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'resolved').length
   };
 
   if (isLoading) {
@@ -321,13 +250,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </select>
             </div>
 
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center space-x-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Complaint</span>
-            </button>
+            <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
+              Read-only view
+            </div>
           </div>
         </div>
 
@@ -338,71 +263,79 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    User ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Complaint
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Priority
+                    Urgency
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Assigned To
+                    Directed To
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
+                    Timestamp
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    Escalation
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredComplaints.map((complaint) => (
-                  <tr key={complaint.id} className="hover:bg-gray-50">
+                {filteredComplaints.map((complaint, index) => (
+                  <tr key={complaint['Unique UserId'] || index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {complaint['Unique UserId'] || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {complaint['Contact'] || 'N/A'}
+                    </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{complaint.title}</div>
-                        <div className="text-sm text-gray-500 truncate max-w-xs">{complaint.description}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {complaint['Compliant-Brief'] || 'No title'}
+                        </div>
+                        <div className="text-sm text-gray-500 truncate max-w-xs">
+                          {complaint['Compliant-Full'] || 'No description'}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900">{complaint.category}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(complaint.priority)}`}>
-                        {complaint.priority}
+                      <span className="text-sm text-gray-900">
+                        {complaint['Compliant-Category'] || 'N/A'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(complaint.status)}`}>
-                        {complaint.status}
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(complaint['Compliant-Urgency'])}`}>
+                        {complaint['Compliant-Urgency'] || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(complaint['Compliant-Status'])}`}>
+                        {complaint['Compliant-Status'] || 'N/A'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {complaint.assigned_to || 'Unassigned'}
+                      {complaint['Compliant-Directed to'] || 'Unassigned'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(complaint.created_at).toLocaleDateString()}
+                      {complaint['Compliant TimeStamp'] 
+                        ? new Date(complaint['Compliant TimeStamp']).toLocaleDateString()
+                        : 'N/A'
+                      }
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => setEditingComplaint(complaint)}
-                          className="text-emerald-600 hover:text-emerald-900"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteComplaint(complaint.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {complaint['Compliant-Escalation'] || 'N/A'}
                     </td>
                   </tr>
                 ))}
@@ -416,181 +349,27 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             </div>
           )}
         </div>
+
+        {/* Info Notice */}
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <AlertCircle className="h-5 w-5 text-blue-400" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-blue-800">
+                Read-Only Mode
+              </h3>
+              <div className="mt-2 text-sm text-blue-700">
+                <p>
+                  This dashboard is currently displaying data from the "Complaints Data" table in read-only mode. 
+                  CRUD operations (Create, Update, Delete) are disabled due to schema limitations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Add Complaint Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Complaint</h3>
-            <form onSubmit={handleAddComplaint} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input
-                  type="text"
-                  value={newComplaint.title}
-                  onChange={(e) => setNewComplaint({ ...newComplaint, title: e.target.value })}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  value={newComplaint.description}
-                  onChange={(e) => setNewComplaint({ ...newComplaint, description: e.target.value })}
-                  required
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select
-                  value={newComplaint.category}
-                  onChange={(e) => setNewComplaint({ ...newComplaint, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="General">General</option>
-                  <option value="IT">IT</option>
-                  <option value="HR">HR</option>
-                  <option value="Facilities">Facilities</option>
-                  <option value="Finance">Finance</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                <select
-                  value={newComplaint.priority}
-                  onChange={(e) => setNewComplaint({ ...newComplaint, priority: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
-                  <option value="Critical">Critical</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
-                <input
-                  type="text"
-                  value={newComplaint.assigned_to}
-                  onChange={(e) => setNewComplaint({ ...newComplaint, assigned_to: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  placeholder="Optional"
-                />
-              </div>
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  Add Complaint
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Complaint Modal */}
-      {editingComplaint && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Edit Complaint</h3>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdateComplaint(editingComplaint.id, {
-                title: editingComplaint.title,
-                description: editingComplaint.description,
-                category: editingComplaint.category,
-                priority: editingComplaint.priority,
-                status: editingComplaint.status,
-                assigned_to: editingComplaint.assigned_to
-              });
-            }} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input
-                  type="text"
-                  value={editingComplaint.title}
-                  onChange={(e) => setEditingComplaint({ ...editingComplaint, title: e.target.value })}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  value={editingComplaint.description}
-                  onChange={(e) => setEditingComplaint({ ...editingComplaint, description: e.target.value })}
-                  required
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select
-                  value={editingComplaint.status}
-                  onChange={(e) => setEditingComplaint({ ...editingComplaint, status: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="Open">Open</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Resolved">Resolved</option>
-                  <option value="Closed">Closed</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                <select
-                  value={editingComplaint.priority}
-                  onChange={(e) => setEditingComplaint({ ...editingComplaint, priority: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
-                  <option value="Critical">Critical</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
-                <input
-                  type="text"
-                  value={editingComplaint.assigned_to || ''}
-                  onChange={(e) => setEditingComplaint({ ...editingComplaint, assigned_to: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-              </div>
-              <div className="flex space-x-3 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  Update Complaint
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingComplaint(null)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
