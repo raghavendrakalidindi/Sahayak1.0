@@ -209,10 +209,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   };
 
   const stats = {
-    total: complaints.length,
-    open: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'open').length,
-    inProgress: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'in progress').length,
-    resolved: complaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'resolved').length
+    total: filteredComplaints.length,
+    open: filteredComplaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'open').length,
+    inProgress: filteredComplaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'in progress').length,
+    resolved: filteredComplaints.filter(c => c['Compliant-Status']?.toLowerCase() === 'resolved').length
   };
 
   if (isLoading) {
