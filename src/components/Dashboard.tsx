@@ -41,21 +41,40 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [directedToFilter, setDirectedToFilter] = useState('All');
+  const [dateFromFilter, setDateFromFilter] = useState('');
+  const [dateToFilter, setDateToFilter] = useState('');
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    // Set default date range to current month
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    setDateFromFilter(firstDay.toISOString().split('T')[0]);
+    setDateToFilter(lastDay.toISOString().split('T')[0]);
+    
     fetchUser();
     fetchComplaints();
   }, []);
 
   useEffect(() => {
     filterComplaints();
-  }, [complaints, searchTerm, statusFilter, priorityFilter, categoryFilter, directedToFilter]);
+  }, [complaints, searchTerm, statusFilter, priorityFilter, categoryFilter, directedToFilter, dateFromFilter, dateToFilter]);
 
   useEffect(() => {
     // Clear selections when filtered complaints change
     setSelectedComplaints(new Set());
   }, [filteredComplaints]);
+  const resetDateToCurrentMonth = () => {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    setDateFromFilter(firstDay.toISOString().split('T')[0]);
+    setDateToFilter(lastDay.toISOString().split('T')[0]);
+  };
+
   const fetchUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
@@ -79,6 +98,23 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const filterComplaints = () => {
     let filtered = complaints;
+
+    // Date range filter
+    if (dateFromFilter || dateToFilter) {
+      filtered = filtered.filter(complaint => {
+        const complaintDate = complaint['Compliant TimeStamp'];
+        if (!complaintDate) return false;
+        
+        const date = new Date(complaintDate);
+        const fromDate = dateFromFilter ? new Date(dateFromFilter) : null;
+        const toDate = dateToFilter ? new Date(dateToFilter + 'T23:59:59') : null;
+        
+        if (fromDate && date < fromDate) return false;
+        if (toDate && date > toDate) return false;
+        
+        return true;
+      });
+    }
 
     if (searchTerm) {
       filtered = filtered.filter(complaint =>
@@ -274,7 +310,37 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         <div className="bg-white rounded-lg shadow mb-6 p-6 sticky top-44 z-20">
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div className="flex flex-col lg:flex-row gap-4 flex-1">
-              {/* First row of filters */}
+              {/* Date Range Filter */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium text-gray-700 whitespace-nowrap">From:</label>
+                  <input
+                    type="date"
+                    value={dateFromFilter}
+                    onChange={(e) => setDateFromFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                  />
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium text-gray-700 whitespace-nowrap">To:</label>
+                  <input
+                    type="date"
+                    value={dateToFilter}
+                    onChange={(e) => setDateToFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+                  />
+                </div>
+                
+                <button
+                  onClick={resetDateToCurrentMonth}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium whitespace-nowrap"
+                >
+                  Current Month
+                </button>
+              </div>
+
+              {/* Search Filter */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -288,7 +354,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 </div>
               </div>
 
-              {/* Second row of filters */}
+              {/* Dropdown Filters */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <select
                   value={statusFilter}
@@ -360,6 +426,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   {selectedComplaints.size} selected
                 </div>
               )}
+              <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                {filteredComplaints.length} complaints
+              </div>
               <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
                 Read-only view
               </div>
