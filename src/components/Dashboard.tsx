@@ -360,76 +360,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
                   {filteredComplaints.length} complaints
                 </div>
-                <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
-                  Read-only view
-                </div>
-              </div>
-            </div>
-
-            {/* Second Row - Search and Filters */}
-            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-              {/* Search Filter */}
-              <div className="flex flex-col lg:flex-row gap-4 flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search complaints or contacts..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
-                  />
-                </div>
-
-                {/* Dropdown Filters */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="All">All Status</option>
-                  <option value="Open">Open</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Resolved">Resolved</option>
-                  <option value="Closed">Closed</option>
-                </select>
-
-                <select
-                  value={priorityFilter}
-                  onChange={(e) => setPriorityFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="All">All Priority</option>
-                  <option value="Critical">Critical</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                </select>
-
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="All">All Categories</option>
-                  {uniqueCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
-
-                <select
-                  value={directedToFilter}
-                  onChange={(e) => setDirectedToFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                >
-                  <option value="All">All Assignees</option>
-                  {uniqueDirectedTo.map(assignee => (
-                    <option key={assignee} value={assignee}>{assignee}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-4">
                 <button
                   onClick={() => {
                     if (selectedComplaints.size === 0) {
@@ -445,6 +375,72 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   <AlertCircle className="w-4 h-4" />
                   <span>Escalate</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Second Row - Search and Filters */}
+            <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+              {/* Search Filter */}
+              <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search complaints or contacts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-72"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-3 flex-1">
+                  {/* Dropdown Filters */}
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 flex-1 min-w-32"
+                  >
+                    <option value="All">All Status</option>
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+
+                  <select
+                    value={priorityFilter}
+                    onChange={(e) => setPriorityFilter(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 flex-1 min-w-32"
+                  >
+                    <option value="All">All Priority</option>
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 flex-1 min-w-36"
+                  >
+                    <option value="All">All Categories</option>
+                    {uniqueCategories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={directedToFilter}
+                    onChange={(e) => setDirectedToFilter(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 flex-1 min-w-36"
+                  >
+                    <option value="All">All Assignees</option>
+                    {uniqueDirectedTo.map(assignee => (
+                      <option key={assignee} value={assignee}>{assignee}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
