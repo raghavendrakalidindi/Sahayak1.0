@@ -37,7 +37,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [selectedComplaints, setSelectedComplaints] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [contactSearch, setContactSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -51,7 +50,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   useEffect(() => {
     filterComplaints();
-  }, [complaints, searchTerm, contactSearch, statusFilter, priorityFilter, categoryFilter, directedToFilter]);
+  }, [complaints, searchTerm, statusFilter, priorityFilter, categoryFilter, directedToFilter]);
 
   useEffect(() => {
     // Clear selections when filtered complaints change
@@ -84,13 +83,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     if (searchTerm) {
       filtered = filtered.filter(complaint =>
         (complaint['Compliant-Brief']?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-        (complaint['Compliant-Full']?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
-      );
-    }
-
-    if (contactSearch) {
-      filtered = filtered.filter(complaint =>
-        complaint['Contact']?.toLowerCase().includes(contactSearch.toLowerCase()) || false
+        (complaint['Compliant-Full']?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+        (complaint['Contact']?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
       );
     }
 
@@ -286,20 +280,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search complaints..."
+                    placeholder="Search complaints or contacts..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
-                  />
-                </div>
-
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search by contact..."
-                    value={contactSearch}
-                    onChange={(e) => setContactSearch(e.target.value)}
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
                   />
                 </div>
