@@ -63,8 +63,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   }, [filteredComplaints]);
   const resetDateToCurrentMonth = () => {
     const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    
+    // First day of current month
+    const firstDay = new Date(year, month, 1);
+    // Last day of current month
+    const lastDay = new Date(year, month + 1, 0);
     
     setDateFromFilter(firstDay.toISOString().split('T')[0]);
     setDateToFilter(lastDay.toISOString().split('T')[0]);
