@@ -308,8 +308,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Controls */}
         <div className="bg-white rounded-lg shadow mb-6 p-6 sticky top-44 z-20">
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-col lg:flex-row gap-4 flex-1">
+          <div className="space-y-4">
+            {/* First Row - Date Range Controls */}
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Date Range Filter */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex items-center space-x-2">
@@ -349,9 +350,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   Overall
                 </button>
               </div>
+              
+              <div className="flex items-center gap-4">
+                {selectedComplaints.size > 0 && (
+                  <div className="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-medium">
+                    {selectedComplaints.size} selected
+                  </div>
+                )}
+                <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                  {filteredComplaints.length} complaints
+                </div>
+                <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
+                  Read-only view
+                </div>
+              </div>
+            </div>
 
+            {/* Second Row - Search and Filters */}
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               {/* Search Filter */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col lg:flex-row gap-4 flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
@@ -362,10 +380,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64"
                   />
                 </div>
-              </div>
 
-              {/* Dropdown Filters */}
-              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Dropdown Filters */}
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
@@ -411,7 +427,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                     <option key={assignee} value={assignee}>{assignee}</option>
                   ))}
                 </select>
+              </div>
 
+              <div className="flex items-center gap-4">
                 <button
                   onClick={() => {
                     if (selectedComplaints.size === 0) {
@@ -427,20 +445,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   <AlertCircle className="w-4 h-4" />
                   <span>Escalate</span>
                 </button>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              {selectedComplaints.size > 0 && (
-                <div className="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-medium">
-                  {selectedComplaints.size} selected
-                </div>
-              )}
-              <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
-                {filteredComplaints.length} complaints
-              </div>
-              <div className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm">
-                Read-only view
               </div>
             </div>
           </div>
