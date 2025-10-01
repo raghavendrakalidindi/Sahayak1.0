@@ -46,13 +46,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Set default date range to current month
-    const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    
-    setDateFromFilter(firstDay.toISOString().split('T')[0]);
-    setDateToFilter(lastDay.toISOString().split('T')[0]);
+    // Set default date range to current month (1st to last day)
+    resetDateToCurrentMonth();
     
     fetchUser();
     fetchComplaints();
