@@ -338,6 +338,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 >
                   Current Month
                 </button>
+                
+                <button
+                  onClick={() => {
+                    setDateFromFilter('');
+                    setDateToFilter('');
+                  }}
+                  className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium whitespace-nowrap"
+                >
+                  Overall
+                </button>
               </div>
 
               {/* Search Filter */}
